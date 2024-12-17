@@ -55,7 +55,7 @@
 
   <div id="content">
     <!-- Coin Image and Loading -->
-    <img src="coin.png" id="coinImage" alt="Coin">
+    <img src="coin1.png" id="coinImage" alt="Coin">
     <div id="loadingDots">.</div>
     <div id="reward"></div>
     <button id="claimButton">Claim Reward</button>
@@ -86,7 +86,7 @@
     // Generate a random reward between 1000 and 7000
     function showReward() {
       const reward = Math.floor(Math.random() * (7000 - 1000 + 1)) + 1000;
-      document.getElementById("reward").textContent = `You have earned ${reward} lion Coin!`;
+      document.getElementById("reward").textContent = `You have earned ${reward} Ghost Coin!`;
 
       // Show the claim button
       document.getElementById("claimButton").style.display = "inline-block";
