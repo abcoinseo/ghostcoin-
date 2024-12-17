@@ -3,13 +3,14 @@ import { getDatabase, ref, set, onValue, update } from "https://www.gstatic.com/
 
 // Firebase configuration
 const firebaseConfig = {
-apiKey: "AIzaSyAGxD2leu_pY8_t_-3rvAwaEXPK1mbsTvQ",
-    authDomain: "ab-work-d4c33.firebaseapp.com",
-    databaseURL: "https://ab-work-d4c33-default-rtdb.firebaseio.com",
-    projectId: "ab-work-d4c33",
-    storageBucket: "ab-work-d4c33.firebasestorage.app",
-    messagingSenderId: "1069052496926",
-    appId: "1:1069052496926:web:ba38604086232f092bb20f"
+apiKey: "AIzaSyCLav6UxukZ5Gnl0PvF7_uFVzzHKNkt2GM",
+    authDomain: "ghost-airdrop.firebaseapp.com",
+    databaseURL: "https://ghost-airdrop-default-rtdb.firebaseio.com",
+    projectId: "ghost-airdrop",
+    storageBucket: "ghost-airdrop.firebasestorage.app",
+    messagingSenderId: "758994897251",
+    appId: "1:758994897251:web:2158dd0991fe4c029ceb56",
+    measurementId: "G-NQ95N0QGFE"
   };
 
 // Initialize Firebase
